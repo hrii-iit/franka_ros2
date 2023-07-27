@@ -4,15 +4,26 @@
   <xacro:arg name="hand" default="false"/> <!-- Should a franka_gripper be mounted at the flange?" -->
   <xacro:arg name="robot_ip" default=""/> <!-- IP address or hostname of the robot" -->
   <xacro:arg name="use_fake_hardware" default="false"/>
+  <xacro:arg name="use_sim" default="true"/>
   <xacro:arg name="fake_sensor_commands" default="false"/>
 
-  <xacro:include filename="$(find franka_description)/robots/panda_arm.xacro"/>
-  <xacro:panda_arm arm_id="$(arg arm_id)" safety_distance="0.03"/>
+  <xacro:include filename="$(find franka_description)/urdf/panda_arm.xacro"/>
+  <xacro:panda_arm arm_id="$(arg arm_id)" safety_distance="0.001"/>
 
-  <xacro:if value="$(arg hand)">
-    <xacro:include filename="$(find franka_description)/robots/hand.xacro"/>
+  <!-- <xacro:if value="$(arg hand)">
+    <xacro:include filename="$(find franka_description)/urdf/hand.xacro"/>
     <xacro:hand ns="$(arg arm_id)" rpy="0 0 ${-pi/4}" connected_to="$(arg arm_id)_link8" safety_distance="0.03"/>
+  </xacro:if> -->
+
+  <!-- <xacro:include filename="$(find franka_description)/urdf/panda_arm.ros2_control.xacro"/>
+  <xacro:panda_arm_ros2_control arm_id="$(arg arm_id)" robot_ip="$(arg robot_ip)" use_fake_hardware="$(arg use_fake_hardware)" use_sim="$(arg use_sim)" fake_sensor_commands="$(arg fake_sensor_commands)"/> -->
+  
+  <xacro:include filename="$(find franka_description)/urdf/panda_arm.ros2_control2.xacro"/>
+  <xacro:panda_ros2control prefix="$(arg arm_id)" EE_no="true"/>
+
+  <xacro:if value="$(arg use_sim)">
+    <xacro:include filename="$(find franka_description)/urdf/panda_arm.transmission.xacro"/>
+    <xacro:panda_transmission arm_id="$(arg arm_id)"/>
   </xacro:if>
-  <xacro:include filename="$(find franka_description)/robots/panda_arm.ros2_control.xacro"/>
-  <xacro:panda_arm_ros2_control ns="$(arg arm_id)" robot_ip="$(arg robot_ip)" use_fake_hardware="$(arg use_fake_hardware)" fake_sensor_commands="$(arg fake_sensor_commands)"/>
+  
 </robot>

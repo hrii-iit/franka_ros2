@@ -12,9 +12,9 @@ if(BUILD_TESTING)
 
 endif()
 
-# Install launch files.
+# Install launch, meshes and URDF files.
 install(DIRECTORY
-  launch robots meshes rviz
+  launch robots meshes rviz urdf
   DESTINATION share/${PROJECT_NAME}/
 )
 

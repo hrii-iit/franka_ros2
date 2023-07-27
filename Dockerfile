@@ -1,21 +1,21 @@
-FROM ros:foxy
+FROM ros:humble
 RUN apt-get update -y && apt-get install -y --allow-unauthenticated \
-    clang-6.0 \
-    clang-format-6.0 \
-    clang-tidy-6.0 \
+    clang-14 \
+    clang-format-14 \
+    clang-tidy-14 \
     python3-pip \
     libpoco-dev \
     libeigen3-dev \
-    ros-foxy-control-msgs \
-    ros-foxy-xacro \
-    ros-foxy-ament-cmake-clang-format \
-    ros-foxy-ament-clang-format \
-    ros-foxy-ament-flake8 \
-    ros-foxy-ament-cmake-clang-tidy \
-    ros-foxy-angles \
-    ros-foxy-ros2-control \
-    ros-foxy-realtime-tools \
-    ros-foxy-control-toolbox \
+    ros-humble-control-msgs \
+    ros-humble-xacro \
+    ros-humble-ament-cmake-clang-format \
+    ros-humble-ament-clang-format \
+    ros-humble-ament-flake8 \
+    ros-humble-ament-cmake-clang-tidy \
+    ros-humble-angles \
+    ros-humble-ros2-control \
+    ros-humble-realtime-tools \
+    ros-humble-control-toolbox \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install -U \
@@ -41,6 +41,3 @@ RUN cd ~/source_code && git clone https://github.com/frankaemika/libfranka.git \
     && cmake -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF  .. \
     && make franka -j$(nproc) \
     && make install
-
-
-
