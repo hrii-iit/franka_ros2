@@ -17,4 +17,10 @@
             The move to start example controller moves the robot into default pose.
         </description>
     </class>
+    <class name="franka_example_controllers/CartesianImpedanceController"
+           type="franka_example_controllers::CartesianImpedanceController" base_class_type="controller_interface::ControllerInterface">
+        <description>
+            The cartesian impedance controller controller allows to send an equilibrium pose and it apply an impedance law to track the commanded pose.
+        </description>
+    </class>
 </library>

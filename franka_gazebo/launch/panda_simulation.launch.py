@@ -35,26 +35,17 @@ def generate_launch_description():
             # safety_limits,
             # " ",
             # "safety_pos_margin:=",
-            # safety_pos_margin,
-            # " ",
-            # "safety_k_position:=",
-            # safety_k_position,
-            # " ",
-            # "name:=",
-            # "ur",
-            # " ",
-            # "ur_type:=",
-            # ur_type,
-            # " ",
-            # "prefix:=",
-            # prefix,
-            # " ",
-            # "sim_gazebo:=true",
-            # " ",
-            # "simulation_controllers:=",
-            # initial_joint_controllers,
+            # safety_pos_margin
         ]
     )
+
+    # robot_controllers = PathJoinSubstitution(
+    #     [
+    #         FindPackageShare("franka_gazebo"),
+    #         "config",
+    #         "franka_controllers.yaml",
+    #     ]
+    # )
 
     # Define robot state publisher node
     node_robot_state_publisher = Node(
@@ -73,7 +64,8 @@ def generate_launch_description():
                             '-topic', 'robot_description',
                             '-entity', 'panda'
                         ],
-                        output='screen')
+                        output='screen'
+    )
 
     # Spawn joint state broadcaster
     joint_state_broadcaster_spawner = Node(
@@ -83,11 +75,22 @@ def generate_launch_description():
     )
 
     # Spawn joint trajectory controller
-    joint_trajectory_controller_spawner = Node(
+    controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_impedance_example_controller", "-c", "/controller_manager"],
+        # arguments=["joint_impedance_example_controller", "-c", "/controller_manager"],
+        arguments=["cartesian_impedance_controller", "-c", "/controller_manager"],
+        # parameters=[
+            # {"robot_description": ParameterValue(robot_description_content, value_type=str)}
+        # ]
     )
+
+    # control_node = Node(
+    #     package="controller_manager",
+    #     executable="ros2_control_node",
+    #     parameters=[{"robot_description": ParameterValue(robot_description_content, value_type=str)}, robot_controllers],
+    #     output="both",
+    # )
 
     # End effector controllers:
     # Panda HAND:
@@ -108,6 +111,7 @@ def generate_launch_description():
         gazebo, 
         node_robot_state_publisher,
         spawn_entity,
+        # control_node,
 
         RegisterEventHandler(
             OnProcessExit(
@@ -121,7 +125,7 @@ def generate_launch_description():
             OnProcessExit(
                 target_action = joint_state_broadcaster_spawner,
                 on_exit = [
-                    joint_trajectory_controller_spawner,
+                    controller_spawner,
                 ]
             )
         ),
